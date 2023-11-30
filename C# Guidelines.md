@@ -12,13 +12,28 @@ Code
    - Names of local variables, parameters: camelCase.
    - Names of private, protected, internal and protected internal fields and properties: _camelCase.
    - Naming convention is unaffected by modifiers such as const, static, readonly, etc.
-   - bool properties consist of questions that begin with Is, Has, Did etc.. when possible
+   - bool properties consist of questions that begin with `Is`, `Has`, `Did` etc.. when possible
    - For casing, a “word” is anything written without internal spaces, including acronyms. For example, MyRpc instead of MyRPC.
    - Names of interfaces start with I, e.g. IInterface.
    - We avoid `this.` and `var` unless absolutely necessary.
    - We always specify the visibility, even if it's the default (e.g. private string _foo not string _foo). Visibility should be the first modifier (e.g. public abstract not abstract public).
 
-
+Unity Specific 
+   - Favour the use of `[SerializeField]` and also write `private` along with it for example [SerializeField] private int mySerializedField;
+   - Favour the use of Auto-Implemented Properties where possible for example `public int PageNumber { get; set; }` instead of having an extra private variable pageNumber
+   - Prefix any method that will be called from the editor when a button is clicked with `OnButtonClick_FunctionName`
+         - Avoid having other methods call this `OnButtonClick_FunctionName` method
+         - if for example the button will purchase an item, then have this `OnButtonClick_FunctionName` call another method to do the actual purchase
+         - the logic inside `OnButtonClick_FunctionName` should handle any button feedback and call any corresponding methods related to player input
+   - Suffix any event listener method with `Callback` for `example DoorOpenedCallback`
+   - Name variables based on their types for example a variable of type `LevelManager` should be named `_levelManager` or `LevelManagerRef` or something similar
+   - Aim for Zero Garbage collection
+         - Check this website for more info https://docs.unity3d.com/Manual/performance-garbage-collection-best-practices.html
+         - Avoid LINQ as possible, LINQ causes a lot of GC, and almost always all the cases can be done with a simple for-loop
+         - Use a unity method that has NonAlloc like `RaycastNonAlloc`
+   - Always cache components and reference at the start or use lazy initialization
+         - For example, don't do GetComponent at update or similar methods that will be called a lot, get the components you need at Start instead
+         - Lazy initialization is where you get the reference you need once you need it, and then never check for it again.
 Files
 
     Filenames and directory names are PascalCase, e.g. MyFile.cs.
@@ -41,7 +56,7 @@ Organization
             Protected.
             Private.
 
-Unity Specific 
+
 
 
 
@@ -70,7 +85,8 @@ namespace MyNamespace                               // Namespaces are PascalCase
     public event Action OnDoorOpened;               //prefixes events with on , and name after their desired behaviour
     public static int NumTimesCalled = 0;           // Field initializers are encouraged.                 
     public int Foo = 0;                             // Public member variables are PascalCase.
-    public bool isCounting = false;                 // boolen starts with is , has 
+
+    private bool _isCounting = false;               // boolen starts with is , has
     private Results _results;                       // Private member variables are _camelCase.   
     private const int _bar = 100;                   // const does not affect naming convention
    
@@ -84,7 +100,7 @@ namespace MyNamespace                               // Namespaces are PascalCase
 
     // If aligning argument lines with the first argument doesn't fit, or is difficult to
     // read, wrap all arguments on new lines with a 4 space indent.
-    void AnotherLongFunctionNameThatCausesLineWrappingProblems(
+    private void AnotherLongFunctionNameThatCausesLineWrappingProblems(
         int longArgumentName, int longArgumentName2, int longArgumentName3) {}
   }
 }
