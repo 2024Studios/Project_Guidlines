@@ -22,15 +22,15 @@ Unity Specific
    - Favour the use of `[SerializeField]` and also write `private` along with it for example `[SerializeField] private int mySerializedField;`
    - Favour the use of Auto-Implemented Properties where possible for example `public int PageNumber { get; set; }` instead of having an extra private variable pageNumber
    - Prefix any method that will be called from the editor when a button is clicked with `OnButtonClick_FunctionName`
-         - Avoid having other methods call this `OnButtonClick_FunctionName` method
-         - if for example, the button will purchase an item, then have this `OnButtonClick_FunctionName` call another method to do the actual purchase
-         - the logic inside `OnButtonClick_FunctionName` should handle any button feedback and call any corresponding methods related to player input
+      - Avoid having other methods call this `OnButtonClick_FunctionName` method
+      - if for example, the button will purchase an item, then have this `OnButtonClick_FunctionName` call another method to do the actual purchase
+      - the logic inside `OnButtonClick_FunctionName` should handle any button feedback and call any corresponding methods related to player input
    - Suffix any event listener method with `Callback` for `example DoorOpenedCallback`
    - Name variables based on their types for example a variable of type `LevelManager` should be named `_levelManager` or `LevelManagerRef` or something similar
    - Aim for Zero Garbage collection
-         - Check this website for more info https://docs.unity3d.com/Manual/performance-garbage-collection-best-practices.html
-         - Avoid LINQ as possible, LINQ causes a lot of GC, and almost always all the cases can be done with a simple for-loop
-         - Use a unity method that has NonAlloc like `RaycastNonAlloc`
+      - Check this website for more info https://docs.unity3d.com/Manual/performance-garbage-collection-best-practices.html
+      - Avoid LINQ as possible, LINQ causes a lot of GC, and almost always all the cases can be done with a simple for-loop
+      - Use a unity method that has NonAlloc like `RaycastNonAlloc`
    - Always cache components and reference at the start or use lazy initialization
          - For example, don't do GetComponent at update or similar methods that will be called a lot, get the components you need at Start instead
          - Lazy initialization is where you get the reference you need once you need it, and then never check for it again.
