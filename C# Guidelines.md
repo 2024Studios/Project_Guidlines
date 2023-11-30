@@ -6,6 +6,7 @@ https://google.github.io/styleguide/csharp-style.html
 https://github.com/dotnet/runtime/blob/main/docs/coding-guidelines/coding-style.md
 
 Rule summary:
+
 Code
    - Names of classes, methods, enumerations, public fields, public properties, namespaces: PascalCase.
    - Names of local variables, parameters: camelCase.
@@ -33,21 +34,22 @@ Unity Specific
    - Always cache components and reference at the start or use lazy initialization
          - For example, don't do GetComponent at update or similar methods that will be called a lot, get the components you need at Start instead
          - Lazy initialization is where you get the reference you need once you need it, and then never check for it again.
+
      
 Files
-    - Filenames and directory names are PascalCase, e.g. MyFile.cs.
-    - In general, prefer one core class per file.
+   - Filenames and directory names are PascalCase, e.g. MyFile.cs.
+   - In general, prefer one core class per file.
 
-Organization
-    - Namespace using declarations go at the top, before any namespaces. using import order is alphabetical, apart from System imports which always go first.
-    - Class member ordering:
+ Organization
+   - Namespace using declarations go at the top, before any namespaces. using import order is alphabetical, apart from System imports which always go first.
+   - Class member ordering:
         Group class members in the following order:
             Nested classes, enums, delegates and events.
             Static, const and readonly fields.
             Fields and properties.
             Constructors and finalizers.
             Methods.
-    - in general favour this ordering:
+   - in general favour this ordering:
             Public.
             Internal.
             Protected internal.
