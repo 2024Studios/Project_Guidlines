@@ -7,7 +7,6 @@ https://github.com/dotnet/runtime/blob/main/docs/coding-guidelines/coding-style.
 
 Rule summary:
 Code
-
    - Names of classes, methods, enumerations, public fields, public properties, namespaces: PascalCase.
    - Names of local variables, parameters: camelCase.
    - Names of private, protected, internal and protected internal fields and properties: _camelCase.
@@ -19,11 +18,11 @@ Code
    - We always specify the visibility, even if it's the default (e.g. private string _foo not string _foo). Visibility should be the first modifier (e.g. public abstract not abstract public).
 
 Unity Specific 
-   - Favour the use of `[SerializeField]` and also write `private` along with it for example [SerializeField] private int mySerializedField;
+   - Favour the use of `[SerializeField]` and also write `private` along with it for example `[SerializeField] private int mySerializedField;`
    - Favour the use of Auto-Implemented Properties where possible for example `public int PageNumber { get; set; }` instead of having an extra private variable pageNumber
    - Prefix any method that will be called from the editor when a button is clicked with `OnButtonClick_FunctionName`
          - Avoid having other methods call this `OnButtonClick_FunctionName` method
-         - if for example the button will purchase an item, then have this `OnButtonClick_FunctionName` call another method to do the actual purchase
+         - if for example, the button will purchase an item, then have this `OnButtonClick_FunctionName` call another method to do the actual purchase
          - the logic inside `OnButtonClick_FunctionName` should handle any button feedback and call any corresponding methods related to player input
    - Suffix any event listener method with `Callback` for `example DoorOpenedCallback`
    - Name variables based on their types for example a variable of type `LevelManager` should be named `_levelManager` or `LevelManagerRef` or something similar
@@ -34,22 +33,21 @@ Unity Specific
    - Always cache components and reference at the start or use lazy initialization
          - For example, don't do GetComponent at update or similar methods that will be called a lot, get the components you need at Start instead
          - Lazy initialization is where you get the reference you need once you need it, and then never check for it again.
+     
 Files
-
-    Filenames and directory names are PascalCase, e.g. MyFile.cs.
-    Where possible the file name should be the same as the name of the main class in the file, e.g. MyClass.cs.
-    In general, prefer one core class per file.
+    - Filenames and directory names are PascalCase, e.g. MyFile.cs.
+    - In general, prefer one core class per file.
 
 Organization
-    Namespace using declarations go at the top, before any namespaces. using import order is alphabetical, apart from System imports which always go first.
-    Class member ordering:
+    - Namespace using declarations go at the top, before any namespaces. using import order is alphabetical, apart from System imports which always go first.
+    - Class member ordering:
         Group class members in the following order:
             Nested classes, enums, delegates and events.
             Static, const and readonly fields.
             Fields and properties.
             Constructors and finalizers.
             Methods.
-    in general favour this ordering:
+    - in general favour this ordering:
             Public.
             Internal.
             Protected internal.
