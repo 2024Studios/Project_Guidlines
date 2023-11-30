@@ -26,6 +26,7 @@ Unity Specific
       - if for example, the button will purchase an item, then have this `OnButtonClick_FunctionName` call another method to do the actual purchase
       - the logic inside `OnButtonClick_FunctionName` should handle any button feedback and call any corresponding methods related to player input
    - Suffix any event listener method with `Callback` for `example DoorOpenedCallback`
+   - One possible and applicable avoid simple one-word method names for example you can replace `Interact()` with `StartInteraction`
    - Name variables based on their types for example a variable of type `LevelManager` should be named `_levelManager` or `LevelManagerRef` or something similar
    - Aim for Zero Garbage collection
       - Check this website for more info https://docs.unity3d.com/Manual/performance-garbage-collection-best-practices.html
