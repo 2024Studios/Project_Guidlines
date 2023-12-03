@@ -19,7 +19,7 @@ Code
    - bool properties consist of questions that begin with `Is`, `Has`, `Did` etc.. when possible
    - For casing, a “word” is anything written without internal spaces, including acronyms. For example, MyRpc instead of MyRPC.
    - Names of interfaces start with I, e.g. IInterface.
-   - aAvoid `this.` and `var` unless necessary.
+   - Avoid `this.` and `var` unless necessary.
    - Always specify the visibility, even if it's the default (e.g. private string _foo not string _foo). Visibility should be the first modifier (e.g. public abstract not abstract public).
    - When calling a delegate or events, use Invoke() and use the null conditional operator - e.g. SomeDelegate?.Invoke()
 
