@@ -106,6 +106,10 @@ namespace MyNamespace                                     // Namespaces are Pasc
 
     private void DoPrivateFunction() { }                  //ALWAYS specify the access modifier
 
+    // If possible, wrap arguments by aligning newlines with the first argument.
+    void AVeryLongFunctionNameThatCausesLineWrappingProblems(int longArgumentName,
+                                                             int p1, int p2) {}
+
     // If aligning argument lines with the first argument doesn't fit, or is difficult to
     // read, wrap all arguments on new lines with a 4 space indent.
     private void AnotherLongFunctionNameThatCausesLineWrappingProblems(
