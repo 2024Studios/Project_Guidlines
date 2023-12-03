@@ -66,36 +66,34 @@ Files
 ``MyClass.cs:``
 
 ```C#
-using System;                                       // `using` goes at the top, outside the namespace
+using System;                                             // `using` goes at the top, outside the namespace
 
-namespace MyNamespace                               // Namespaces are PascalCase.
+namespace MyNamespace                                     // Namespaces are PascalCase.
 {
   public interface IMyInterface
-  {                                                 // Interfaces start with 'I'
-    public int Calculate(float value, float exp);   // Methods are PascalCase and space after comma.
+  {                                                       // Interfaces start with 'I'
+    public int Calculate(float value, float exp);         // Methods are PascalCase and space after comma.
   }
 
-  public enum MyEnum                                // Enumerations are PascalCase.
+  public enum MyEnum                                      // Enumerations are PascalCase.
   {                             
-    Yes,                                            // Enumerators are PascalCase.
+    Yes,                                                  // Enumerators are PascalCase.
     No,
   }
 
-  public class MyClass                              // Classes are PascalCase.
+  public class MyClass                                    // Classes are PascalCase.
   {
-    public event Action OnDoorOpened;               //prefixes events with on , and name after their desired behaviour
-    public static int NumTimesCalled = 0;           // Field initializers are encouraged.                 
-    public int Foo = 0;                             // Public member variables are PascalCase.
+    public event Action OnDoorOpened;                     //prefixes events with on , and name after their desired behaviour
+    public static int NumTimesCalled = 0;                 // Field initializers are encouraged.                 
+    public int Foo = 0;                                   // Public member variables are PascalCase.
 
-    private bool _isCounting = false;               // boolen starts with is , has
-    private Results _results;                       // Private member variables are _camelCase.   
-    private const int _bar = 100;                   // const does not affect naming convention
+    private bool _isCounting = false;                     // boolen starts with is , has
+    private Results _results;                             // Private member variables are _camelCase.   
+    private const int _bar = 100;                         // const does not affect naming convention
    
     public int CalculateValue(int mulNumber)
     {     
-      var resultValue = Foo * mulNumber;            // Local variables are camelCase.
-      NumTimesCalled++;
-      Foo += _bar;
+      int resultValue = Foo * mulNumber;                  // Local variables are camelCase.
       return resultValue;
     }
 
