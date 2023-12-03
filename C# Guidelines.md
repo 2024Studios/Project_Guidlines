@@ -88,7 +88,7 @@ namespace MyNamespace                                     // Namespaces are Pasc
 
   public class MyClass                                    // Classes are PascalCase.
   {
-    public event Action OnDoorOpened;                     //prefixes events with on , and name after their desired behaviour
+    public event Action OnResultChange;                   //prefixes events with on , and name after their desired behaviour
     public static int NumTimesCalled = 0;                 // Field initializers are encouraged.                 
     public int Foo = 0;                                   // Public member variables are PascalCase.
 
@@ -99,11 +99,11 @@ namespace MyNamespace                                     // Namespaces are Pasc
     public int CalculateValue(int mulNumber)
     {     
       int resultValue = Foo * mulNumber;                  // Local variables are camelCase.
-      OnDoorOpened?.Invoke();                             // use Invoke to fire delegate and events
+      OnResultChange?.Invoke();                             // use Invoke to fire delegate and events
       return resultValue;
     }
 
-    public void DoorOpenedCallback(){}                    // Suffix the event listener method with “Callback”
+    public void ResultChangeCallback(){}                    // Suffix the event listener method with “Callback”
 
     public bool IsNewPosition(Vector3 currentPosition)    // EXAMPLE: Methods ask a question when they return bool.             
     {
