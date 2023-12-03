@@ -5,6 +5,10 @@ Based on :
 - https://google.github.io/styleguide/csharp-style.html
 - https://github.com/dotnet/runtime/blob/main/docs/coding-guidelines/coding-style.md
 
+Tools :
+ - Use CodeMaid to help beatify and clean up code
+ - https://marketplace.visualstudio.com/items?itemName=SteveCadwallader.CodeMaid
+
 Rule summary:
 
 Code
@@ -17,6 +21,7 @@ Code
    - Names of interfaces start with I, e.g. IInterface.
    - aAvoid `this.` and `var` unless necessary.
    - Always specify the visibility, even if it's the default (e.g. private string _foo not string _foo). Visibility should be the first modifier (e.g. public abstract not abstract public).
+   - When calling a delegate or events, use Invoke() and use the null conditional operator - e.g. SomeDelegate?.Invoke()
 
 Unity Specific 
    - Favour the use of `[SerializeField]` and also write `private` along with it for example `[SerializeField] private int mySerializedField;`
@@ -94,6 +99,7 @@ namespace MyNamespace                                     // Namespaces are Pasc
     public int CalculateValue(int mulNumber)
     {     
       int resultValue = Foo * mulNumber;                  // Local variables are camelCase.
+      OnDoorOpened?.Invoke();                             // use Invoke to fire delegate and events
       return resultValue;
     }
 
