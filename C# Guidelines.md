@@ -2,8 +2,8 @@ C# Coding Style
 ===============
 
 Based on :
-https://google.github.io/styleguide/csharp-style.html
-https://github.com/dotnet/runtime/blob/main/docs/coding-guidelines/coding-style.md
+- https://google.github.io/styleguide/csharp-style.html
+- https://github.com/dotnet/runtime/blob/main/docs/coding-guidelines/coding-style.md
 
 Rule summary:
 
@@ -15,8 +15,8 @@ Code
    - bool properties consist of questions that begin with `Is`, `Has`, `Did` etc.. when possible
    - For casing, a “word” is anything written without internal spaces, including acronyms. For example, MyRpc instead of MyRPC.
    - Names of interfaces start with I, e.g. IInterface.
-   - We avoid `this.` and `var` unless absolutely necessary.
-   - We always specify the visibility, even if it's the default (e.g. private string _foo not string _foo). Visibility should be the first modifier (e.g. public abstract not abstract public).
+   - aAvoid `this.` and `var` unless necessary.
+   - Always specify the visibility, even if it's the default (e.g. private string _foo not string _foo). Visibility should be the first modifier (e.g. public abstract not abstract public).
 
 Unity Specific 
    - Favour the use of `[SerializeField]` and also write `private` along with it for example `[SerializeField] private int mySerializedField;`
@@ -99,6 +99,15 @@ namespace MyNamespace                               // Namespaces are PascalCase
       return resultValue;
     }
 
+    public void DoorOpenedCallback(){}                    // Suffix the event listener method with “Callback”
+
+    public bool IsNewPosition(Vector3 currentPosition)    // EXAMPLE: Methods ask a question when they return bool.             
+    {
+      return (transform.position == newPosition);
+    }
+
+    private void DoPrivateFunction() { }                  //ALWAYS specify the access modifier
+
     // If aligning argument lines with the first argument doesn't fit, or is difficult to
     // read, wrap all arguments on new lines with a 4 space indent.
     private void AnotherLongFunctionNameThatCausesLineWrappingProblems(
@@ -108,37 +117,20 @@ namespace MyNamespace                               // Namespaces are PascalCase
 
 ```
 
-``ObservableLinkedList`1.ObservableLinkedListNode.cs:``
+``MyUnityClass.cs:``
 
 ```C#
 using System;
+  public class MyUnityClass
+  {
+   [SerializeField] private int mySerializedField;
+   [field: SerializeField] public int foo { get; private set; }      // you can use serialize field on properties 
+ 
+   private void Start();                                             // Don't use public access modifiers for MonoBehaviour-specific methods
+   public void InflictDamage(float damage, bool isSpecialDamage) { } // EXAMPLE: Methods start with a verb.
 
-namespace System.Collections.Generics
-{
-    partial class ObservableLinkedList<T>
-    {
-        public class ObservableLinkedListNode
-        {
-            private readonly ObservableLinkedList<T> _parent;
-            private readonly T _value;
-
-            internal ObservableLinkedListNode(ObservableLinkedList<T> parent, T value)
-            {
-                Debug.Assert(parent != null);
-
-                _parent = parent;
-                _value = value;
-            }
-
-            public T Value
-            {
-                get { return _value; }
-            }
-        }
-
-        ...
-    }
-}
+   public OnButtonClick_StartGame()                                  // Method called from button click OnButtonClick
+   {} 
+  }
 ```
 
-For other languages, our current best guidance is consistency. When editing files, keep new code and changes consistent with the style in the files. For new files, it should conform to the style for that component. If there is a completely new component, anything that is reasonably broadly accepted is fine. For script files, please refer to the scripting blog for [tips](https://devblogs.microsoft.com/scripting/tag/powertip) and [best practices](https://devblogs.microsoft.com/scripting/tag/best-practices).
