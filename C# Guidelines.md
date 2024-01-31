@@ -24,7 +24,7 @@ Code
    - When calling a delegate or events, use Invoke() and use the null conditional operator - e.g. SomeDelegate?.Invoke()
 
 Unity Specific 
-   - Favour the use of `[SerializeField]` and also write `private` along with it for example `[SerializeField] private int mySerializedField;`
+   - Favour the use of `[SerializeField]` and also write `private` along with it for example `[SerializeField] private int _mySerializedField;`
    - Favour the use of Auto-Implemented Properties where possible for example `public int PageNumber { get; set; }` instead of having an extra private variable pageNumber
    - Prefix any method that will be called from the editor when a button is clicked with `OnButtonClick_FunctionName`
       - Avoid having other methods call this `OnButtonClick_FunctionName` method
@@ -131,7 +131,7 @@ namespace MyNamespace                                     // Namespaces are Pasc
 using System;
   public class MyUnityClass
   {
-   [SerializeField] private int mySerializedField;
+   [SerializeField] private int _mySerializedField;
    [field: SerializeField] public int foo { get; private set; }      // you can use serialize field on properties 
  
    private void Start();                                             // Don't use public access modifiers for MonoBehaviour-specific methods
