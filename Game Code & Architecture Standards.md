@@ -80,6 +80,7 @@ When writing a script that needs to interact with another system, ask yourself t
 
 - **YES (Lower Layer):** Use the **Service Locator**. 
   - *Example: If your gameplay code needs to read a save file to proceed.*
+  - *Or the system needs to be cached because it will be called regularly, for example, physics or character Motor* 
 - **YES (Same Layer):** Read from a shared **Blackboard** or pass an **Interface**. 
   - *Rule: Do not use the Service Locator to couple two high-level gameplay systems together.*
 - **YES (Math/Data):** Use a **Static Function**. 
@@ -95,7 +96,9 @@ When writing a script that needs to interact with another system, ask yourself t
 ### ❓ Q3: Am I communicating with a lower-level layer?
 
 - **NO RETURN VALUE NEEDED:** Use **Events**. 
-  - *Why:* This is for "Fire and Forget" actions. If the player jumps, fire a `PlaySoundEvent`. If the Audio System is broken, the game won't crash because the player doesn't hold a direct reference to it.
+  - *Why:* This is for "Fire and Forget" actions. If the player jumps, fire a `PlaySoundEvent`.
+  - It provides the best decoupling when you don't care about the return value
+  - Events can also be used as a way to enhance performance by queuing similar messages. Think of it, instead of each element calling audio play, which may cause a cache miss, we queue all the audio plays in this frame, and the audio manager at the end of the frame loops over all the queued audio events to play the audio
 - **RETURN VALUE NEEDED:** Use the **Service Locator** to query the lower layer.
 
 ---
