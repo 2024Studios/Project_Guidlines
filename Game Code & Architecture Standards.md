@@ -92,7 +92,7 @@ When writing a script that needs to interact with another system, ask yourself t
 
 - **YES (e.g., a Door, a Vehicle):** Use a **Direct Reference** or **Interface**.
   - *How:* Typically obtained via a spatial query like a Raycast (calculating distance strictly in **meters**) or OverlapSphere. Physics is our spatial decoupler. You interact with the `IInteractable` interface returned by the raycast, keeping the caller completely blind to the specific object type.
-  - *Or Use DataID* if you need an entity that exists in a table-like format, use their ID think Unity localization, where you get the localized text by ID and in code you need variable of type *LocalizedString*, which is a wrapper around the ID, same for Audio clips, abilities, or weapons so depending on the type and system use the proper way to reference this entity *Also in this case you can say we aren't referencing a system we just need Data Asset*
+- Or Use **DataID** if you need an entity that exists in a table-like format, use their ID think Unity localization, where you get the localized text by ID and in code you need variable of type *LocalizedString*, which is a wrapper around the ID, same for Audio clips, abilities, or weapons so depending on the type and system use the proper way to reference this entity *Also in this case you can say we aren't referencing a system we just need Data Asset*
 
 ### ❓ Q3: Am I communicating with a lower-level layer?
 
