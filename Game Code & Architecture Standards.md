@@ -158,6 +158,11 @@ By having more methods that just do pure calculations, our code becomes triviall
 2. **Compute (Pure Math):** No Unity calls, no allocations, no mutation outside the method scope.
 3. **Action (Side Effects):** Write transform, play audio, trigger animation.
 
+> [!NOTE]
+> This is not a major shift in coding style, but  it's mainly a way to help arrange the flow of code when it's possible.
+> so it's a way of organizing methods when it's possible, sometimes it will be hard to apply, so it's okay not to do it when it overcomplicates the logic 
+> check the code below for a concrete example
+ 
 **Example:**
 ```csharp
 void Update()
