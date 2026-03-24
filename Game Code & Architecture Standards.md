@@ -59,7 +59,7 @@ We have five approved methods for systems to communicate. Understanding *what* t
 | **Service Locator** | A safe, interface-driven global registry (`Services.Get<T>()`). | Fetching core engine managers & retrieving data. |
 | **Event** | A decoupled struct broadcasted to the void (`EventBus.Fire()`). | Fire-and-forget actions across layer boundaries. |
 | **Static Methods** | Pure functions used strictly for math and data transformations. | Stateless calculations passing `ref` structs. |
-| **Data IDs** | Unique IDs that can reference game entities | similar to localization, they are used to reference a single entity that exists in a big table |
+| **Data IDs** | Unique IDs that can reference game entities | similar to localization, they are used to reference a single entity that exists in a big table or in otherwords you just want to reference an audio from a list of audios or an ability from the abilities list  |
 > [!TIP]
 > **Event Timing:** Events can be executed instantly or queued until the end of the frame, depending on the urgency of the action.
 
