@@ -1,114 +1,199 @@
-# 🏗️ Game Code & Architecture Standards
+<div align="center">
 
-> *The foundational guidelines for writing clean, decoupled, and performant code at 2024 Studios.*
+# 🏗️ Game Code & Architecture Standards  
+### *Clean • Decoupled • Performant*
 
-![Architecture](https://img.shields.io/badge/Architecture-Data--Driven%20OOP-blue?style=flat-square)
-![Engine](https://img.shields.io/badge/Engine-Unity%20C%23-lightgrey?style=flat-square&logo=unity)
-![Performance](https://img.shields.io/badge/Performance-Zero%20GC-success?style=flat-square)
-
-> [!IMPORTANT]
-> **Core Philosophy:** Our architecture is built on a **Layered, Performance-Aware** approach. The goal is to maximize decoupling, eliminate spaghetti code, and keep our Unity Inspectors clean, all while maintaining strict performance standards.
+</div>
 
 ---
-
-## 📑 Table of Contents
-
-1. [Layered Architecture & Assembly Definitions](#%EF%B8%8F-1-layered-architecture--assembly-definitions)
-2. [The Communication Toolbox](#-2-the-communication-toolbox)
-3. [The Golden Rules of System Communication](#%E2%9A%96%EF%B8%8F-3-the-golden-rules-of-system-communication)
-4. [The Communication Cheat Sheet](#-4-the-communication-cheat-sheet)
-
----
-
-## 🏛️ 1. Layered Architecture & Assembly Definitions
-
-To prevent circular dependencies and tangled code, our codebase is divided into strict layers. A layer is a conceptual grouping, but we enforce these boundaries physically using **Unity Assembly Definitions (`.asmdef`)**. 
-
-Each layer contains multiple **Systems**, and **each System gets its own Assembly Definition**.
-
-### 🧱 The Layer Hierarchy
-
-| Layer | Scope | Examples |
-| --- | --- | --- |
-| **1. High (Gameplay)** | Specific game rules, entity logic, and game loop. | `Character Controllers`, `AI`, `Weapons`, `Game Modes` |
-| **2. Mid (Features)** | Reusable gameplay mechanics and interfaces. | `Inventory`, `Quest Log`, `UI Logic`, `Objectives` |
-| **3. Low (Core Engine)**| Foundational engine wrappers and global utilities. | `Save System`, `Audio`, `Localization`, `Event Bus` |
 
 > [!NOTE]
-> **Hierarchy Scaling:** This is a foundational hierarchy. Additional layers can be added or adjusted if it suits the specific scale and needs of the game.
+> Our architecture follows a **Layered, Performance-Aware** approach.  
+> The goal is to maximize **decoupling**, eliminate **spaghetti code**, and keep Unity Inspectors **clean**, while maintaining strict performance standards.
 
-### 🛡️ The Dependency Rule (The Iron Wall)
-
-Code can only reference Assemblies in its own layer or the layers *below* it. 
-
-> [!CAUTION]
-> **A Lower Layer can NEVER reference a Higher Layer.**
-> For example, the `Core.Audio` assembly cannot reference the `Gameplay.Weapons` assembly. If a Core system needs to know about a Gameplay event, it must listen via the Event Bus.
+This document defines how systems are structured and **exactly how they are allowed to communicate**.
 
 ---
 
-## 🧰 2. The Communication Toolbox
+## 📖 Table of Contents
 
-We have five approved methods for systems to communicate. Understanding *what* these are is the first step; knowing *when* to use them is the key to our architecture.
+- [📚 Layered Architecture & Assembly Definitions](#-layered-architecture--assembly-definitions)
+- [🛠️ Communication Toolbox](#️-communication-toolbox)
+- [🧭 Golden Rules of System Communication](#-golden-rules-of-system-communication)
+- [📋 Communication Cheat Sheet](#-communication-cheat-sheet)
 
-| Tool | Concept | Best Used For |
-| --- | --- | --- |
-| **Direct Reference** | A hard link to another class via `GetComponent` or `[SerializeField]`. | Intra-system links & cached hierarchy lookups. |
-| **Interface** | Interacting with a contract (`IInteractable`) rather than a concrete class. | Polymorphism & spatial queries (Raycasts). |
-| **Service Locator** | A safe, interface-driven global registry (`Services.Get<T>()`). | Fetching core engine managers & retrieving data. |
-| **Event** | A decoupled struct broadcasted to the void (`EventBus.Fire()`). | Fire-and-forget actions across layer boundaries. |
-| **Static Methods** | Pure functions used strictly for math and data transformations. | Stateless calculations passing `ref` structs. |
+---
+
+## 📚 Layered Architecture & Assembly Definitions
+
+To prevent circular dependencies and tangled code, the codebase is divided into **strict layers**.
+
+A layer is conceptual, but enforced physically using:
+
+> **Unity Assembly Definitions (`.asmdef`)**
+
+Each layer contains multiple **Systems**, and:
+
+> **Each System must have its own Assembly Definition**
+
+---
+
+### 🧱 Layer Hierarchy
+
+```
+┌──────────────────────────────┐
+│ High Layer     (Gameplay)    │
+│ Controllers • AI • Weapons   │
+├──────────────────────────────┤
+│ Mid Layer      (Features)    │
+│ Inventory • UI • Quests      │
+├──────────────────────────────┤
+│ Low Layer      (Core)        │
+│ Save • Audio • Input • Events│
+└──────────────────────────────┘
+```
+
+- **High Layer (Gameplay):** Character Controllers, AI, Weapons, Game Modes  
+- **Mid Layer (Features):** Inventory, Quest Log, UI Logic, Objectives  
+- **Low Layer (Core Engine):** Save System, Audio, Localization, Input, Event Bus  
 
 > [!TIP]
-> **Event Timing:** Events can be executed instantly or queued until the end of the frame, depending on the urgency of the action.
+> This hierarchy is flexible. Add or adjust layers depending on project scale.
 
-### 🔄 Intra-System Communication
+---
 
-When scripts *within the exact same system* need to talk to each other, we generally prefer **Direct References** (via `GetComponent` / `Awake` caching) or the **Service Locator** to keep prefabs clean and avoid missing reference exceptions.
+### 🚧 Dependency Rule — *The Iron Wall*
+
+> Code can only reference:
+> - Its own layer  
+> - Layers **below**
+
+---
+
+> [!CAUTION]
+> **Lower layers must NEVER reference higher layers.**  
+>
+> ❌ `Core.Audio` → `Gameplay.Weapons`  
+> ✅ `Gameplay.Weapons` → `Core.Audio`  
+>
+> If a Core system needs Gameplay data, it must listen via the **Event Bus**.
+
+---
+
+## 🛠️ Communication Toolbox
+
+There are **five approved communication methods**.
+
+Choosing the right one is critical.
+
+---
+
+| Tool | Description | Best Use Case |
+|------|------------|--------------|
+| 🎯 **Direct Reference** | Hard link (`GetComponent`, `[SerializeField]`) | Intra-system links |
+| 🤝 **Interface** | Contract-based interaction | Polymorphism, Raycasts |
+| 🔍 **Service Locator** | Global interface registry | Core systems access |
+| 📡 **Event** | Decoupled broadcast | Fire-and-forget |
+| 🧮 **Static Methods** | Pure functions | Math & data transforms |
+
+---
+
+> [!NOTE]
+> **Event Timing**
+>
+> Events can be:
+> - Immediate  
+> - End-of-frame queued  
+>
+> Choose based on urgency.
+
+---
+
+### 🔗 Intra-System Communication
+
+Inside the **same system**, prefer:
+
+- ✅ **Direct References** (`GetComponent`, cached in `Awake`)  
+- ✅ **Service Locator** (to keep prefabs clean)
+
+---
 
 > [!WARNING]
-> This is **not** a strict rule. Use the Service Locator or code-based lookups when it makes sense. However, if dragging and dropping a dependency directly into the Unity Inspector is clearly the better, more designer-friendly workflow for a specific prefab, use the Inspector.
+> This is not absolute.
+>
+> If using the **Inspector** improves workflow and clarity, prefer it.  
+> Avoid dogma — optimize for **clarity + usability**.
 
 ---
 
-## ⚖️ 3. The Golden Rules of System Communication
+## 🧭 Golden Rules of System Communication
 
-When writing a script that needs to interact with another system, ask yourself the following three questions to determine the exact tool you must use.
-
-### ❓ Q1: Do I need a return value *right now* to continue my logic?
-
-- **YES (Lower Layer):** Use the **Service Locator**. 
-  - *Example: If your gameplay code needs to read a save file to proceed.*
-- **YES (Same Layer):** Read from a shared **Blackboard** or pass an **Interface**. 
-  - *Rule: Do not use the Service Locator to couple two high-level gameplay systems together.*
-- **YES (Math/Data):** Use a **Static Function**. 
-  - *Example: If you need a damage multiplier, pass your data into a pure static math class.*
-- **NO:** Use **Events**. *(See Q3).*
-
-### ❓ Q2: Am I communicating with a specific physical entity in the world?
-
-- **YES (e.g., a Door, a Vehicle):** Use a **Direct Reference** or **Interface**.
-  - *How:* Typically obtained via a spatial query like a Raycast (calculating distance strictly in **meters**) or OverlapSphere. Physics is our spatial decoupler. You interact with the `IInteractable` interface returned by the raycast, keeping the caller completely blind to the specific object type.
-
-### ❓ Q3: Am I communicating with a lower-level layer?
-
-- **NO RETURN VALUE NEEDED:** Use **Events**. 
-  - *Why:* This is for "Fire and Forget" actions. If the player jumps, fire a `PlaySoundEvent`. If the Audio System is broken, the game won't crash because the player doesn't hold a direct reference to it.
-- **RETURN VALUE NEEDED:** Use the **Service Locator** to query the lower layer.
+When a system needs to communicate, ask these:
 
 ---
 
-## 🚀 4. The Communication Cheat Sheet
+### ❓ Q1: Do I need a return value *right now*?
 
-Keep this table handy when reviewing Pull Requests or architecting a new feature.
+- 🟢 **YES (Lower Layer)** → Use **Service Locator**  
+  *Example: Reading save data*
 
-| Scenario | Target Layer | The Standard Tool | Example Implementation |
-| --- | --- | --- | --- |
-| **Instant Math / Logic** | Stateless Logic | `Static Function` | `CombatMath.CalculateCrit(ref stats)` |
-| **Spatial Interaction** | Specific World Entity | `Physics + Interface` | `hit.collider.TryGetComponent<IInteractable>()` |
-| **Needs Data Instantly**| Core Engine (Lower) | `Service Locator` | `Services.Data.ReadSlot(1)` |
-| **Needs Shared State** | Gameplay (Same Layer)| `Blackboard` | `if (LevelBlackboard.IsRaining)` |
-| **Fire & Forget** | Any Layer | `Event` | `EventBus.Fire(new AudioEvent("jump"))` |
+- 🟡 **YES (Same Layer)** → Use **Interface** or **Blackboard**  
+  *Avoid Service Locator coupling between gameplay systems*
+
+- 🔵 **YES (Math/Data)** → Use **Static Function**  
+  *Pure computation only*
+
+- 🔴 **NO** → Use **Events**
 
 ---
-*Built for scale. Designed for performance at 2024 Studios.*
+
+### ❓ Q2: Am I targeting a physical world object?
+
+- 🟢 **YES** → Use **Direct Reference** or **Interface**
+
+**Typical flow:**
+```csharp
+if (hit.collider.TryGetComponent<IInteractable>(out var interactable))
+{
+    interactable.Interact();
+}
+```
+
+> Physics acts as a **spatial decoupler**  
+> → You don’t need to know the concrete type
+
+---
+
+### ❓ Q3: Am I communicating with a lower layer?
+
+- 🔴 **No return value** → **Event**
+  - Fire-and-forget
+  - Safe if receiver fails
+
+- 🟢 **Needs return value** → **Service Locator**
+
+---
+
+## 📋 Communication Cheat Sheet
+
+Use this when reviewing PRs or designing systems:
+
+---
+
+| Scenario | Target | Tool | Example |
+|----------|--------|------|--------|
+| Instant logic | Stateless | 🧮 Static | `CombatMath.CalculateCrit(ref stats)` |
+| Spatial interaction | World entity | 🎯 Raycast + Interface | `TryGetComponent<IInteractable>()` |
+| Immediate data | Core layer | 🔍 Service Locator | `Services.Data.ReadSlot(1)` |
+| Shared state | Same layer | 🤝 Blackboard | `LevelBlackboard.IsRaining` |
+| Fire & forget | Any | 📡 Event | `EventBus.Fire(new AudioEvent("jump"))` |
+
+---
+
+<br>
+
+<div align="center">
+
+### 🚀 Built for Scale • Performance • Clarity
+
+</div>
