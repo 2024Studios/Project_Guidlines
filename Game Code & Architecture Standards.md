@@ -156,7 +156,7 @@ By having more methods that just do pure calculations, our code becomes triviall
 **The Pattern:**
 1. **Gather (Side Effects):** Read transforms, read deltaTime, read input.
 2. **Compute (Pure Math):** No Unity calls, no allocations, no mutation outside the method scope.
-3. **Action (Side Effects):** Write transform, play audio, trigger animation.
+3. **Action (Side Effects):** Write transform, play audio, trigger animation, or even **change class variable**.
 
 > [!NOTE]
 > This is not a major shift in coding style, but  it's mainly a way to help arrange the flow of code when it's possible.
@@ -198,6 +198,17 @@ void ApplyMovement(vector3 nextPosition)
   t.position = nextPosition;
 }
 ```
+> [!CAUTION]
+> **Compute methods won't change class members**
+> That's an important point, pass the variables, even if it's a class member, to the compute method to avoid state changes
+> When we minimize how many methods change the state of an object -> we minimize the places in code where we need to check for bugs
+
+> [!CAUTION]
+> changing a member variable of a class will be considered an action method (it's not a bad thing, it's just something to minimize where it happens)
+
+> [!NOTE]
+> **KinematicCharacterController script:** has a good example of that where it ties with having structs of related data.
+> so instead of modifying the variables like isPlayerGrounded,GroundNormal,etc all over the script, he has different structs and each frame he generates a new struct with the new values  
 
 ### 5.3 Use `const` and `readonly` for Non-Changing Values
 Hardcoded magic numbers should be avoided. Using explicitly declared constants improves readability, prevents accidental mutation, and enables aggressive compiler optimizations.
