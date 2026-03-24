@@ -201,7 +201,7 @@ void ApplyMovement(vector3 nextPosition)
 > [!CAUTION]
 > **Compute methods won't change class members**
 > That's an important point, pass the variables, even if it's a class member, to the compute method to avoid state changes
-> When we minimize how many methods change the state of an object -> we minimize the places in code where we need to check for bugs
+> - When we minimize how many methods change the state of an object -> we minimize the places in code where we need to check for bugs
 
 > [!CAUTION]
 > changing a member variable of a class will be considered an action method (it's not a bad thing, it's just something to minimize where it happens)
