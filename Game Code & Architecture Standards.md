@@ -180,8 +180,9 @@ Vector3 ComputeVelocity(vector3 current , float dt)
 
 vector3 ComputeFriction(vector3 current , vector3 nextPosition)
 {
-  //it's okay to use things like physics where it does no state change or affect the class itself, simply you can remove this method and put it in any other class without the need to change anything
-  vector3 surfacePoint = physics.raycastNonAllo();
+  //It's okay to use things like physics where it does no state change, nor changes class methods, nor calls any other action methods in the class
+  //Simply, you can move this method and put it in any other class without the need to change anything
+  vector3 surfacePoint = physics.raycastNonAllo(...);
   float friction = surfacePoint.sqrMagnitude * 0.02f;    //Normally 0.02f will be const 
   return nextPosition - (nextPosition * friction);       //Assume a correct friction logic equation as this is for demonstration only
 }
