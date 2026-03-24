@@ -251,4 +251,3 @@ private struct MovementState
 > **Avoid:** Putting logic-heavy code inside structs, or storing Lists/reference types inside structs that are accessed in hot loops.
 
 ---
-*Built for scale. Designed for performance at 2024 Studios.*
