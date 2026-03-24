@@ -208,7 +208,12 @@ void ApplyMovement(vector3 nextPosition)
 
 > [!NOTE]
 > **KinematicCharacterController script:** has a good example of that where it ties with having structs of related data.
-> so instead of modifying the variables like isPlayerGrounded,GroundNormal,etc all over the script, he has different structs and each frame he generates a new struct with the new values  
+> so instead of modifying the variables like isPlayerGrounded,GroundNormal,etc all over the script, he has different structs and each frame he generates a new struct with the new values
+> so by combining structs + basic DODs concepts + basic side effect free concepts
+> - Memory Locality and Cache hit
+> - The data is treated as a Snapshot.
+> - The logic takes "Input State A," performs math, and produces "Output State B."
+> - This makes the code much easier to debug because the data doesn't change "behind your back."
 
 ### 5.3 Use `const` and `readonly` for Non-Changing Values
 Hardcoded magic numbers should be avoided. Using explicitly declared constants improves readability, prevents accidental mutation, and enables aggressive compiler optimizations.
