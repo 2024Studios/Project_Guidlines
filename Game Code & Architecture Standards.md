@@ -165,17 +165,31 @@ void Update()
     Transform t = transform;
     float dt = Time.deltaTime;
 
-    Vector3 current = t.position;           // Gather
-    Vector3 velocity = ComputeVelocity(dt); // Pure Compute
-    Vector3 next = current + velocity * dt; // Pure Compute
-
-    t.position = next;                      // Action (Apply)
+    Vector3 current = t.position;                            // Gather, it can be it's own function as needed
+    Vector3 nextPosition = ComputeVelocity(current , dt);    // Pure Compute
+    nextPosition = ComputeFriction(current , nextPosition);  // Pure Compute
+    ApplyMovement(nextPosition);                             // Action (Apply)
 }
 
-Vector3 ComputeVelocity(float dt)
+Vector3 ComputeVelocity(vector3 current , float dt)
 {
     // Pure logic. Easily testable.
-    return new Vector3(0, 5f, 0);
+    vector dir = new Vector3(0, 5f, 0);
+    return current + dir * dt;
+}
+
+vector3 ComputeFriction(vector3 current , vector3 nextPosition)
+{
+  //it's okay to use things like physics where it does no state change or affect the class itself, simply you can remove this method and put it in any other class without the need to change anything
+  vector3 surfacePoint = physics.raycastNonAllo();
+  float friction = surfacePoint.sqrMagnitude * 0.02f;    //Normally 0.02f will be const 
+  return nextPosition - (nextPosition * friction);       //Assume a correct friction logic equation as this is for demonstration only
+}
+
+void ApplyMovement(vector3 nextPosition)
+{
+  EventManager.Publish(PlayFootSteps);
+  t.position = nextPosition;
 }
 ```
 
