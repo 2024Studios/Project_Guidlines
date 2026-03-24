@@ -84,6 +84,7 @@ When writing a script that needs to interact with another system, ask yourself t
   - *Rule: Do not use the Service Locator to couple two high-level gameplay systems together.*
 - **YES (Math/Data):** Use a **Static Function**. 
   - *Example: If you need a damage multiplier, pass your data into a pure static math class.*
+  - *Think of it as **Mathf.Sqrt** a simple math function that does math calculation only on its input; it doesn't change or affect class members or anything else*
 - **NO:** Use **Events**. *(See Q3).*
 
 ### ❓ Q2: Am I communicating with a specific physical entity in the world?
