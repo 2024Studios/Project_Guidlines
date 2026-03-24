@@ -1,1 +1,87 @@
+# 🏗️ Game Code & Architecture Standards
 
+## 📚 Table of Contents
+1. [Layered Architecture & Assembly Definitions](#-layered-architecture--assembly-definitions)
+2. [The Communication Toolbox](#-the-communication-toolbox)
+3. [The Golden Rules of System Communication](#-the-golden-rules-of-system-communication)
+4. [The Communication Cheat Sheet](#-the-communication-cheat-sheet)
+
+Welcome to the core architectural guidelines for our codebase. Our architecture is built on a **Layered, Performance-Aware** approach. The goal is to maximize decoupling, eliminate spaghetti code, and keep our Unity Inspectors clean, all while maintaining strict performance standards.
+
+This document outlines how we structure our systems and the exact rules for how those systems are allowed to talk to each other.
+
+## 📚 1. Layered Architecture & Assembly Definitions
+
+To prevent circular dependencies and tangled code, our codebase is divided into strict layers. A layer is a conceptual grouping, but we enforce these boundaries physically using Unity Assembly Definitions (.asmdef).
+
+Each layer contains multiple Systems, and each System gets its own Assembly Definition.
+
+### The Layer Hierarchy
+
+- **High Layer (Gameplay)**: Character Controllers, AI, Weapons, Game Modes.
+- **Mid Layer (Features)**: Inventory, Quest Log, UI logic, Objectives.
+- **Low Layer (Core Engine)**: Save System, Audio, Localization, Input, Event Bus.
+
+> **Note**: This is a foundational hierarchy. Additional layers can be added or adjusted if it suits the specific scale and needs of the game.
+
+### The Dependency Rule (The Iron Wall)
+
+Code can only reference Assemblies in its own layer or the layers below it.
+
+- 🚫 **CRITICAL**: A Lower Layer can never reference a Higher Layer. For example, the `Core.Audio` assembly cannot reference the `Gameplay.Weapons` assembly. If a Core system needs to know about a Gameplay event, it must listen via the Event Bus.
+
+## 🛠️ 2. The Communication Toolbox
+
+We have five approved methods for systems to communicate. Understanding what these are is the first step; knowing when to use them is the key to our architecture.
+
+- **Direct Reference**: A hard link to another class (e.g., via `GetComponent` or `[SerializeField]`).
+  
+- **Interface**: Interacting with a contract (e.g., `IInteractable`) rather than a concrete class.
+  
+- **Service Locator**: A globally accessible registry that returns core systems (e.g., `Services.Get<SaveSystem>()`). It acts as a safe, interface-driven replacement for Singletons.
+  
+- **Events (Message Queue)**: A decoupled struct broadcasted to the void (e.g., `EventBus.Fire(new PlaySoundEvent())`). The sender does not know who is listening. Events can be executed instantly or queued until the end of the frame, depending on the urgency of the action.
+  
+- **Static Methods**: Pure functions used strictly for math and data transformations, containing zero state.
+
+### Intra-System Communication (Within the Same System)
+
+When scripts within the exact same system need to talk to each other, we generally prefer Direct References (via `GetComponent/Awake` caching) or the Service Locator to keep prefabs clean and avoid missing reference exceptions.
+
+> ⚠️ **WARNING**: This is not a strict rule. Use the Service Locator or code-based lookups when it makes sense, but if dragging and dropping a dependency directly into the Unity Inspector is clearly the better, more designer-friendly workflow for a specific prefab, use the Inspector.
+
+## 🧭 3. The Golden Rules of System Communication
+
+When writing a script that needs to interact with another system, ask yourself the following three questions to determine the exact tool you must use.
+
+### Q1: Do I need a return value right now to continue my logic?
+
+- **YES (Lower Layer)**: Use the Service Locator. If your gameplay code needs to read a save file to proceed, query the locator.
+  
+- **YES (Same Layer)**: Read from a shared Blackboard or pass an Interface. Do not use the Service Locator to couple two high-level gameplay systems together.
+  
+- **YES (Math/Data)**: Use a Static Function. If you need a damage multiplier, pass your data into a pure static math class.
+  
+- **NO**: Use Events. (See Q3).
+
+### Q2: Am I communicating with a specific physical entity in the world?
+
+- **YES (e.g., a Door, a Vehicle)**: Use a Direct Reference or Interface, typically obtained via a spatial query like a Raycast or OverlapSphere. Physics is our spatial decoupler. You interact with the `IInteractable` interface returned by the raycast, keeping the caller completely blind to the specific object type.
+
+### Q3: Am I communicating with a lower-level layer?
+
+- **NO RETURN VALUE NEEDED**: Use Events. This is for "Fire and Forget" actions. If the player jumps, fire a `PlaySoundEvent`. If the Audio System is broken, the game won't crash because the player doesn't hold a direct reference to it.
+  
+- **RETURN VALUE NEEDED**: Use the Service Locator to query the lower layer.
+
+## 📋 The Communication Cheat Sheet
+
+Keep this table handy when reviewing Pull Requests or architecting a new feature.
+
+| Scenario                     | Target Layer                | The Standard Tool                  | Example                                         |
+|------------------------------|-----------------------------|------------------------------------|-------------------------------------------------|
+| Instant Math / Logic         | Stateless Logic             | Static Function (ref data)        | `CombatMath.CalculateCrit(ref stats)`           |
+| Spatial Interaction           | Specific World Entity       | Physics/Raycast + Interface        | `hit.collider.TryGetComponent<IInteractable>()` |
+| Needs Data Instantly         | Core Engine (Lower Layer)   | Service Locator                    | `Services.Data.ReadSlot(1)`                     |
+| Needs Shared State           | Gameplay (Same Layer)      | Blackboard (Read-Only)            | `if (LevelBlackboard.IsRaining)`                |
+| Fire & Forget                | Any Layer                   | Event                              | `EventBus.Fire(new AudioEvent("jump"))`        |
