@@ -92,10 +92,3 @@ for more info check here
 https://github.com/2024Studios/CustomTools/blob/main/Packages/com.s2024.data_ids/README.md
 
 ---
-
-
-
-> [!WARNING]
-> **Avoid:** Putting logic-heavy code inside structs, or storing Lists/reference types inside structs that are accessed in hot loops.
-
----
