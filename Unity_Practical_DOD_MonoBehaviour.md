@@ -25,7 +25,7 @@ public class Enemy : MonoBehaviour
 -   Harder to batch logic
 
 This is fine for small counts (10--50).\
-Not ideal for hundreds or thousands.
+**Not ideal for hundreds or thousands.**
 
 ------------------------------------------------------------------------
 
