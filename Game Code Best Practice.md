@@ -3,6 +3,9 @@
 
 Beyond macro-architecture, our micro-architecture (how methods and variables are written) must adhere to strict performance standards to avoid Garbage Collection (GC) spikes and native-crossing overhead.
 
+Table Content:
+- [Cache Components in Hot Paths]().
+- [Minimal Functional Separation (Without Over-Engineering)]().
 --- 
 ### Cache Components in Hot Paths
 Unity property access (like `transform.position` or `Time.deltaTime`) crosses native C++ to C# boundaries. Reading it repeatedly in `Update` or physics loops adds massive overhead.
