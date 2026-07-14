@@ -57,32 +57,39 @@ We have five approved methods for systems to communicate. Understanding *what* t
 | Tool | Concept | Best Used For |
 | --- | --- | --- |
 | **Direct Reference** | A hard link to another class via `GetComponent` or `[SerializeField]`. | you are with-in the same layer and with-in the same assembly definition |
-| **Service Locator** | A safe, interface-driven global registry (`Services.Get<T>()`). | Higher layer wants to communicate with lower layer, good when you want a reference to a class that you will call offen or expect return value from it |
-| **Event** | A decoupled struct broadcasted to the void (`EventBus.Fire()`). | Fire-and-forget actions across layer boundaries. the most suitable way if lower layers want to trigger something , many systems needs to listen to this change |
-| **Static Methods** | Pure functions used strictly for math and data transformations. | for example if you have damage calcualtions on lower level , think of it as calling Mathf library or vector3 library |
-| **Data IDs** | Unique IDs that can reference game entities | similar to localization, they are used to reference a single entity that exists in a big table or in otherwords you just want to reference an audio from a list of audios or an ability from the abilities list  |
+| **s2024 Service Cache** | A safe, interface-driven global registry (`Services.Get<T>()`). | Higher layer wants to communicate with lower layer, good when you want a reference to a class that you will call offen or expect return value from it |
+| **s2024 Event** | A decoupled struct broadcasted to the void (`EventBus.Fire()`). | Fire-and-forget actions across layer boundaries. the most suitable way if lower layers want to trigger something , many systems needs to listen to this change |
+| **Static Methods** | Pure functions used strictly for math and data transformations. | for example if you have damage calculations on lower level script , think of it as calling Mathf library or vector3 library |
+| **s2024 Data IDs** | Unique IDs that can reference game entities | similar to localization, they are used to reference a single entity that exists in a big table or in otherwords you just want to reference an audio from a list of audios or an ability from the abilities list  |
 > [!TIP]
 > **Event Timing:** Events can be executed instantly or queued until the end of the frame, depending on the urgency of the action.
 
-### 🔄 Intra-System Communication
+### 🔄 2024 Service Cache
 
-When scripts *within the exact same system* need to talk to each other, we generally prefer **Direct References** (via `GetComponent` / `Awake` caching) or the **Service Locator** to keep prefabs clean and avoid missing reference exceptions.
+Higher level calling -> Lower level
+for example if UI HUD needs to keep track of playerHealth , you can just get use serviceLocator to keep reference of playerHealth
+for more info check here 
+https://github.com/2024Studios/CustomTools/blob/main/Packages/com.s2024.service_cache/README.md
 
-> [!WARNING]
-> This is **not** a strict rule. Use the Service Locator or code-based lookups when it makes sense. However, if dragging and dropping a dependency directly into the Unity Inspector is clearly the better, more designer-friendly workflow for a specific prefab, use the Inspector.
----
+### 🔄 s2024 Event
 
-## 🚀 4. The Communication Cheat Sheet
+can be called from any layer and type safe , good when lower level needs to notify higher levels or there's many systems that needs to receive a notification 
+for more info check here 
+https://github.com/2024Studios/CustomTools/blob/main/Packages/com.s2024.event_manager/README.md
 
-Keep this table handy when reviewing Pull Requests or architecting a new feature.
+### 🔄 **Static Methods**
 
-| Scenario | Target Layer | The Standard Tool | Example Implementation |
-| --- | --- | --- | --- |
-| **Instant Math / Logic** | Stateless Logic | `Static Function` | `CombatMath.CalculateCrit(ref stats)` |
-| **Spatial Interaction** | Specific World Entity | `Physics + Interface` | `hit.collider.TryGetComponent<IInteractable>()` |
-| **Needs Data Instantly**| Core Engine (Lower) | `Service Locator` | `Services.Data.ReadSlot(1)` |
-| **Needs Shared State** | Gameplay (Same Layer)| `Blackboard` | `if (LevelBlackboard.IsRaining)` |
-| **Fire & Forget** | Any Layer | `Event` | `EventBus.Fire(new AudioEvent("jump"))` |
+good to keep it simple when seperating a math library or something like damage calculations , when this damage equation can be called by alot of systems
+only work because this methods don't change any class members , they are side affect free meaning they always return the same output when giving the same input
+think like Mathf.Sin
+
+### 🔄 **s2024 Data IDs**
+
+Easy way to reference project asset that won't change in runtime , think of it like using keys to reference localization strings 
+you can use IDs to reference AudioClips + any modifications you want to create on this audio clips 
+you can use IDs to reference scriptableobjects in simplier manager and pass this id around 
+for more info check here 
+https://github.com/2024Studios/CustomTools/blob/main/Packages/com.s2024.data_ids/README.md
 
 ---
 
