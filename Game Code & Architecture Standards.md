@@ -83,26 +83,35 @@ When writing a script that needs to interact with another system, ask yourself t
 When writing a script that needs to interact with another system, follow this decision tree to find the exact tool you must use. **Stop at the first condition that matches your need.**
 
 ### 🌳 The Decision Flowchart
+## ⚖️ 3. The Golden Rules of System Communication
+
+When writing a script that needs to interact with another system, follow this decision tree to find the exact tool you must use. **Stop at the first condition that matches your need.**
+
+### 🌳 The Decision Flowchart
+
+> [!NOTE]
+> GitHub natively renders this block as a visual flowchart.
+
+```mermaid
 flowchart TD
     Start([I need my script to communicate...]) --> Q1
 
-    Q1{"1. Is it a physical entity<br>in the 3D/2D world?"}
-    Q1 -- Yes --> A1["<b>Physics + Interface</b><br>hit.TryGetComponent&lt;IInteractable&gt;()"]
+    Q1{"`**1. Is it a physical entity**<br/>in the 3D/2D world?`"}
+    Q1 -- Yes --> A1["`**Physics + Interface**<br/>*hit.TryGetComponent(IInteractable)*`"]
     Q1 -- No --> Q2
 
-    Q2{"2. Is it pure, stateless<br>math or data?"}
-    Q2 -- Yes --> A2["<b>Static Function</b><br>CombatMath.CalculateCrit()"]
+    Q2{"`**2. Is it pure, stateless**<br/>math or data?`"}
+    Q2 -- Yes --> A2["`**Static Function**<br/>*CombatMath.CalculateCrit()*`"]
     Q2 -- No --> Q3
 
-    Q3{"3. Fetching a global asset<br>from a table/list?"}
-    Q3 -- Yes --> A3["<b>Data ID / Scriptable Object</b><br>AudioService.Play(DashAudioID)"]
+    Q3{"`**3. Fetching a global asset**<br/>from a table/list?`"}
+    Q3 -- Yes --> A3["`**Data ID / Scriptable Object**<br/>*AudioService.Play(DashAudioID)*`"]
     Q3 -- No --> Q4
 
-    Q4{"4. Do you need a return value<br>RIGHT NOW?"}
-    Q4 -- Yes: Lower Layer --> A4A["<b>Service Locator</b><br>Services.Get&lt;ISaveSystem&gt;()"]
-    Q4 -- Yes: Same Layer --> A4B["<b>Blackboard / Interface</b><br>LevelBlackboard.IsRaining"]
-    Q4 -- No: Fire & Forget --> A5["<b>Event Bus</b><br>EventBus.Fire(new JumpEvent())"]
-
+    Q4{"`**4. Do you need a return value**<br/>RIGHT NOW?`"}
+    Q4 -- Yes: Lower Layer --> A4A["`**Service Locator**<br/>*Services.Get(ISaveSystem)*`"]
+    Q4 -- Yes: Same Layer --> A4B["`**Blackboard / Interface**<br/>*LevelBlackboard.IsRaining*`"]
+    Q4 -- No: Fire & Forget --> A5["`**Event Bus**<br/>*EventBus.Fire(new JumpEvent())*`"]
 ---
 
 ## 🚀 4. The Communication Cheat Sheet
