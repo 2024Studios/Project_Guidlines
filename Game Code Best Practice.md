@@ -131,8 +131,7 @@ private struct MovementState
 
 # Practical Data-Oriented Design in Unity (Use this one you need to update 100+ gameobject like a horde of enemy)
 
-## The Problem With Naive MonoBehaviour Updates
-
+when we normally need to move alot of enemies in the same time we add one script per enemy like this
 Typical approach:
 
 ``` csharp
