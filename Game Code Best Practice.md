@@ -3,11 +3,16 @@
 
 Beyond macro-architecture, our micro-architecture (how methods and variables are written) must adhere to strict performance standards to avoid Garbage Collection (GC) spikes and native-crossing overhead.
 
-Table Content:
-- [Cache Components in Hot Paths]().
-- [Minimal Functional Separation (Without Over-Engineering)]().
+
+Content:
+- [Cache Components in Hot Paths](#c1).
+- [Minimal Functional Separation (Without Over-Engineering)](#c2).
+- [Use `const` and `readonly` for Non-Changing Values](#c3).
+- [Use `struct` as Dumb Data Storage](#c4).
+- [Data Orineted when loop over 100+ Gameobject](#c5).
+
 --- 
-### Cache Components in Hot Paths
+### Cache Components in Hot Paths <a id='c1'></a>
 Unity property access (like `transform.position` or `Time.deltaTime`) crosses native C++ to C# boundaries. Reading it repeatedly in `Update` or physics loops adds massive overhead.
 
 ❌ **Avoid (Multiple Native Crossings):**
@@ -33,7 +38,7 @@ void Update()
 }
 ```
 --- 
-### Minimal Functional Separation (Without Over-Engineering)
+### Minimal Functional Separation (Without Over-Engineering) <a id='c2'></a>
 Keep logic readable and explicitly separate **Side Effects** (methods that change the state of an entity or the game world) from **Pure Computation**. 
 
 By having more methods that just do pure calculations, our code becomes trivially easy to test and validate. Isolating side effects makes it vastly easier to track down bugs.
@@ -102,7 +107,7 @@ void ApplyMovement(vector3 nextPosition)
 
 --- 
 
-### Use `const` and `readonly` for Non-Changing Values
+### Use `const` and `readonly` for Non-Changing Values <a id='c3'></a>
 Hardcoded magic numbers should be avoided. Using explicitly declared constants improves readability, prevents accidental mutation, and enables aggressive compiler optimizations.
 
 
@@ -114,7 +119,7 @@ private const int MaxHealth = 100;
 
 --- 
 
-### Use `struct` as Dumb Data Storage (When It Makes Sense)
+### Use `struct` as Dumb Data Storage (When It Makes Sense) <a id='c4'></a>
 We leverage structs to keep our memory allocations off the heap, avoiding the Garbage Collector entirely.
 
 **Use structs when:**
@@ -138,7 +143,7 @@ private struct MovementState
 ✔ No getters/setters (properties), just plain fields for speed.  
 
 --- 
-## Practical Data-Oriented Design in Unity (Use this one you need to update 100+ gameobject like a horde of enemy)
+## Practical Data-Oriented Design in Unity (Use this one you need to update 100+ gameobject like a horde of enemy) <a id='c5'></a>
 
 when we normally need to move alot of enemies in the same time we add one script per enemy like this
 Typical approach:
