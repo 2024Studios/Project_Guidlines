@@ -71,47 +71,6 @@ When scripts *within the exact same system* need to talk to each other, we gener
 
 > [!WARNING]
 > This is **not** a strict rule. Use the Service Locator or code-based lookups when it makes sense. However, if dragging and dropping a dependency directly into the Unity Inspector is clearly the better, more designer-friendly workflow for a specific prefab, use the Inspector.
-
----
-
-## ⚖️ 3. The Golden Rules of System Communication
-
-When writing a script that needs to interact with another system, ask yourself the following three questions to determine the exact tool you must use.
-
-## ⚖️ 3. The Golden Rules of System Communication
-
-When writing a script that needs to interact with another system, follow this decision tree to find the exact tool you must use. **Stop at the first condition that matches your need.**
-
-### 🌳 The Decision Flowchart
-## ⚖️ 3. The Golden Rules of System Communication
-
-When writing a script that needs to interact with another system, follow this decision tree to find the exact tool you must use. **Stop at the first condition that matches your need.**
-
-### 🌳 The Decision Flowchart
-
-> [!NOTE]
-> GitHub natively renders this block as a visual flowchart.
-
-```mermaid
-flowchart TD
-    Start([I need my script to communicate...]) --> Q1
-
-    Q1{"`**1. Is it a physical entity**<br/>in the 3D/2D world?`"}
-    Q1 -- Yes --> A1["`**Physics + Interface**<br/>*hit.TryGetComponent(IInteractable)*`"]
-    Q1 -- No --> Q2
-
-    Q2{"`**2. Is it pure, stateless**<br/>math or data?`"}
-    Q2 -- Yes --> A2["`**Static Function**<br/>*CombatMath.CalculateCrit()*`"]
-    Q2 -- No --> Q3
-
-    Q3{"`**3. Fetching a global asset**<br/>from a table/list?`"}
-    Q3 -- Yes --> A3["`**Data ID / Scriptable Object**<br/>*AudioService.Play(DashAudioID)*`"]
-    Q3 -- No --> Q4
-
-    Q4{"`**4. Do you need a return value**<br/>RIGHT NOW?`"}
-    Q4 -- Yes: Lower Layer --> A4A["`**Service Locator**<br/>*Services.Get(ISaveSystem)*`"]
-    Q4 -- Yes: Same Layer --> A4B["`**Blackboard / Interface**<br/>*LevelBlackboard.IsRaining*`"]
-    Q4 -- No: Fire & Forget --> A5["`**Event Bus**<br/>*EventBus.Fire(new JumpEvent())*`"]
 ---
 
 ## 🚀 4. The Communication Cheat Sheet
