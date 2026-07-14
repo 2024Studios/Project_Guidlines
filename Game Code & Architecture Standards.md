@@ -77,43 +77,37 @@ When scripts *within the exact same system* need to talk to each other, we gener
 ## ⚖️ 3. The Golden Rules of System Communication
 
 When writing a script that needs to interact with another system, ask yourself the following three questions to determine the exact tool you must use.
-=========================================================================
-            THE COMMUNICATION DECISION TREE
-=========================================================================
 
- [ START: I need my script to communicate with something else ]
-    │
-    ├─► 1. Is it a specific physical entity in the 3D/2D world?
-    │      (e.g., A door, an enemy, a vehicle)
-    │      └─► USE: Physics (Raycast/Overlap) + Interface
-    │               (e.g., hit.collider.TryGetComponent<IInteractable>())
-    │
-    ├─► 2. Is it pure, stateless math or data transformation?
-    │      (e.g., Calculating critical hit damage)
-    │      └─► USE: Static Function
-    │               (e.g., CombatMath.CalculateCrit(ref stats))
-    │
-    ├─► 3. Are you fetching a global asset or config from a table?
-    │      (e.g., An audio clip, localized text, a weapon stat block)
-    │      └─► USE: Data ID / Scriptable Object
-    │               (e.g., AudioService.Play(DashAudioID))
-    │
-    ├─► 4. Do you need a return value RIGHT NOW to continue your code?
-    │      │
-    │      ├─► From a LOWER Layer? (Core Systems)
-    │      │   └─► USE: Service Locator
-    │      │            (e.g., Services.Get<ISaveSystem>().ReadSlot(1))
-    │      │
-    │      └─► From the SAME Layer? (Gameplay Systems)
-    │          └─► USE: Blackboard or direct Interface passing
-    │                   (e.g., LevelBlackboard.IsRaining)
-    │                   *Never use the Service Locator to link two Gameplay systems.*
-    │
-    └─► 5. You don't need a return value? (Fire & Forget)
-           (e.g., The player jumped, an enemy died, the score changed)
-           └─► USE: Event Bus
-                    (e.g., EventBus.Fire(new PlayerJumpedEvent()))
-                    *This provides maximum decoupling and allows frame-end queuing.*
+## ⚖️ 3. The Golden Rules of System Communication
+
+When writing a script that needs to interact with another system, follow this decision tree to find the exact tool you must use. **Stop at the first condition that matches your need.**
+
+### 🌳 The Decision Flowchart
+
+> [!NOTE]
+> GitHub natively renders this block as a visual flowchart.
+
+```mermaid
+flowchart TD
+    Start([I need my script to communicate...]) --> Q1
+
+    Q1{1. Is it a physical entity<br>in the 3D/2D world?}
+    Q1 -- Yes --> A1[<b>Physics + Interface</b><br><code>hit.TryGetComponent&lt;IInteractable&gt;()</code>]
+    Q1 -- No --> Q2
+
+    Q2{2. Is it pure, stateless<br>math or data?}
+    Q2 -- Yes --> A2[<b>Static Function</b><br><code>CombatMath.CalculateCrit()</code>]
+    Q2 -- No --> Q3
+
+    Q3{3. Fetching a global asset<br>from a table/list?}
+    Q3 -- Yes --> A3[<b>Data ID / Scriptable Object</b><br><code>AudioService.Play(DashAudioID)</code>]
+    Q3 -- No --> Q4
+
+    Q4{4. Do you need a return value<br>RIGHT NOW?}
+    Q4 -- Yes: Lower Layer --> A4A[<b>Service Locator</b><br><code>Services.Get&lt;ISaveSystem&gt;()</code>]
+    Q4 -- Yes: Same Layer --> A4B[<b>Blackboard / Interface</b><br><code>LevelBlackboard.IsRaining</code>]
+    Q4 -- No: Fire & Forget --> A5[<b>Event Bus</b><br><code>EventBus.Fire(new JumpEvent())</code>]
+
 ---
 
 ## 🚀 4. The Communication Cheat Sheet
