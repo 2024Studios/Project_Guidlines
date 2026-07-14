@@ -3,6 +3,7 @@
 
 Beyond macro-architecture, our micro-architecture (how methods and variables are written) must adhere to strict performance standards to avoid Garbage Collection (GC) spikes and native-crossing overhead.
 
+--- 
 ### Cache Components in Hot Paths
 Unity property access (like `transform.position` or `Time.deltaTime`) crosses native C++ to C# boundaries. Reading it repeatedly in `Update` or physics loops adds massive overhead.
 
@@ -28,7 +29,7 @@ void Update()
     t.position = pos;               // apply once
 }
 ```
-
+--- 
 ### Minimal Functional Separation (Without Over-Engineering)
 Keep logic readable and explicitly separate **Side Effects** (methods that change the state of an entity or the game world) from **Pure Computation**. 
 
@@ -96,14 +97,19 @@ void ApplyMovement(vector3 nextPosition)
 > - The logic takes "Input State A," performs math, and produces "Output State B."
 > - This makes the code much easier to debug because the data doesn't change "behind your back."
 
+--- 
+
 ### Use `const` and `readonly` for Non-Changing Values
 Hardcoded magic numbers should be avoided. Using explicitly declared constants improves readability, prevents accidental mutation, and enables aggressive compiler optimizations.
+
 
 ```csharp
 private const float Gravity = -9.81f;
 private const int MaxHealth = 100;
 ```
 *Note: Use `readonly` when a value must be assigned at runtime (e.g., in `Awake` or a constructor) but should never change after initialization.*
+
+--- 
 
 ### Use `struct` as Dumb Data Storage (When It Makes Sense)
 We leverage structs to keep our memory allocations off the heap, avoiding the Garbage Collector entirely.
@@ -128,8 +134,8 @@ private struct MovementState
 ✔ Improves cache locality.  
 ✔ No getters/setters (properties), just plain fields for speed.  
 
-
-# Practical Data-Oriented Design in Unity (Use this one you need to update 100+ gameobject like a horde of enemy)
+--- 
+## Practical Data-Oriented Design in Unity (Use this one you need to update 100+ gameobject like a horde of enemy)
 
 when we normally need to move alot of enemies in the same time we add one script per enemy like this
 Typical approach:
@@ -147,30 +153,23 @@ public class Enemy : MonoBehaviour
 }
 ```
 
-### Issues when enemy count grows:
-
+The Issues when enemy count grows:
 -   Each enemy reads its own transform
 -   Separate Update() call per enemy
 -   Poor memory locality
 -   Harder to batch logic
 
-This is fine for small counts (10--50).\
-**Not ideal for hundreds or thousands.**
+This is fine for small counts (10--50). **Not ideal for hundreds or thousands.**
 
-------------------------------------------------------------------------
-
-# Practical Data-Oriented Approach (Still Using MonoBehaviour)
-
-We keep MonoBehaviour, but centralize hot logic.
-
-1.  Store references once\
-2.  Extract minimal movement data\
-3.  Update in tight loop\
+So the **solution** We keep MonoBehaviour, but centralize hot logic.
+1.  Store references once
+2.  Extract minimal movement data
+3.  Update in tight loop
 4.  Apply back to transforms
 
 ------------------------------------------------------------------------
 
-## Step 1 --- Enemy Component (Data Holder)
+#### Step 1 --- Enemy Component (Data Holder)
 
 ``` csharp
 public class Enemy : MonoBehaviour
@@ -195,7 +194,7 @@ public class Enemy : MonoBehaviour
 
 ------------------------------------------------------------------------
 
-## Step 2 --- Enemy Manager (Centralized Loop)
+#### Step 2 --- Enemy Manager (Centralized Loop)
 
 ``` csharp
 public class EnemyManager : MonoBehaviour
@@ -228,7 +227,7 @@ public class EnemyManager : MonoBehaviour
 
 ------------------------------------------------------------------------
 
-# Hybrid Struct Buffer (When Count Is Large)
+### Hybrid Struct Buffer (When Count Is Large)
 
 Separate data for tight math loops.
 
@@ -281,37 +280,3 @@ private void Update()
 }
 ```
 
-------------------------------------------------------------------------
-
-# Why This Works
-
-✔ Single tight loop\
-✔ Better cache locality\
-✔ Fewer virtual calls\
-✔ Easy migration to Jobs/Burst\
-✔ Still fully compatible with MonoBehaviour
-
-------------------------------------------------------------------------
-
-# When To Use
-
-Use when: - Enemy count \> 200 - Same logic runs on many objects -
-Profiling shows Update() overhead
-
-Avoid when: - Small object counts - Code clarity would suffer
-
-------------------------------------------------------------------------
-
-# Key Insight
-
-Data-Oriented in Unity does NOT mean abandoning MonoBehaviour.
-
-It means: - Move hot logic into tight loops\
-- Keep components as data containers\
-- Batch work instead of scattering it
-
-
-> [!WARNING]
-> **Avoid:** Putting logic-heavy code inside structs, or storing Lists/reference types inside structs that are accessed in hot loops.
-
----
