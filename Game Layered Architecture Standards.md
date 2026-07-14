@@ -4,16 +4,6 @@
 
 ---
 
-## 📑 Table of Contents
-
-1. [Layered Architecture & Assembly Definitions](#%EF%B8%8F-1-layered-architecture--assembly-definitions)
-2. [The Communication Toolbox](#-2-the-communication-toolbox)
-3. [The Golden Rules of System Communication](#%E2%9A%96%EF%B8%8F-3-the-golden-rules-of-system-communication)
-4. [The Communication Cheat Sheet](#-4-the-communication-cheat-sheet)
-5. [Code-Level Performance & Style Guidelines](#%E2%9A%A1-5-code-level-performance--style-guidelines)
-
----
-
 ## 🏛️ 1. Layered Architecture & Assembly Definitions
 
 To prevent circular dependencies and tangled code, our codebase is divided into strict layers. A layer is a conceptual grouping, but we enforce these boundaries physically using **Unity Assembly Definitions (`.asmdef`)**. 
