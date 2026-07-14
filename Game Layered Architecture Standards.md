@@ -2,13 +2,6 @@
 
 > *The foundational guidelines for writing clean, decoupled, and performant code at 2024 Studios written by/Ahmed Mohi. cleaned up, structured, and examples by 3mo GEMINI.*
 
-![Architecture](https://img.shields.io/badge/Architecture-Data--Driven%20OOP-blue?style=flat-square)
-![Engine](https://img.shields.io/badge/Engine-Unity%20C%23-lightgrey?style=flat-square&logo=unity)
-![Performance](https://img.shields.io/badge/Performance-Zero%20GC-success?style=flat-square)
-
-> [!IMPORTANT]
-> **Core Philosophy:** Our architecture is built on a **Layered, Performance-Aware** approach. The goal is to maximize decoupling, eliminate spaghetti code, and keep our Unity Inspectors clean, all while maintaining strict performance standards.
-
 ---
 
 ## 📑 Table of Contents
