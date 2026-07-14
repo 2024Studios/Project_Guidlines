@@ -66,29 +66,29 @@ We have five approved methods for systems to communicate. Understanding *what* t
 
 ### 🔄 2024 Service Cache
 
-Higher level calling -> Lower level
-for example if UI HUD needs to keep track of playerHealth , you can just get use serviceLocator to keep reference of playerHealth
-for more info check here 
-https://github.com/2024Studios/CustomTools/blob/main/Packages/com.s2024.service_cache/README.md
+- Higher level calling -> Lower level
+- for example if UI HUD needs to keep track of playerHealth , you can just get use serviceLocator to keep reference of playerHealth
+- for more info check here 
+- https://github.com/2024Studios/CustomTools/blob/main/Packages/com.s2024.service_cache/README.md
 
 ### 🔄 s2024 Event
 
-can be called from any layer and type safe , good when lower level needs to notify higher levels or there's many systems that needs to receive a notification 
-for more info check here 
-https://github.com/2024Studios/CustomTools/blob/main/Packages/com.s2024.event_manager/README.md
+- can be called from any layer and type safe , good when lower level needs to notify higher levels or there's many systems that needs to receive a notification 
+- for more info check here 
+- https://github.com/2024Studios/CustomTools/blob/main/Packages/com.s2024.event_manager/README.md
 
 ### 🔄 **Static Methods**
 
-good to keep it simple when seperating a math library or something like damage calculations , when this damage equation can be called by alot of systems
-only work because this methods don't change any class members , they are side affect free meaning they always return the same output when giving the same input
-think like Mathf.Sin
+- good to keep it simple when seperating a math library or something like damage calculations , when this damage equation can be called by alot of systems
+- only work because this methods don't change any class members , they are side affect free meaning they always return the same output when giving the same input
+- think like Mathf.Sin
 
 ### 🔄 **s2024 Data IDs**
 
-Easy way to reference project asset that won't change in runtime , think of it like using keys to reference localization strings 
-you can use IDs to reference AudioClips + any modifications you want to create on this audio clips 
-you can use IDs to reference scriptableobjects in simplier manager and pass this id around 
-for more info check here 
-https://github.com/2024Studios/CustomTools/blob/main/Packages/com.s2024.data_ids/README.md
+- Easy way to reference project asset that won't change in runtime , think of it like using keys to reference localization strings 
+- you can use IDs to reference AudioClips + any modifications you want to create on this audio clips 
+- you can use IDs to reference scriptableobjects in simplier manager and pass this id around 
+- for more info check here 
+- https://github.com/2024Studios/CustomTools/blob/main/Packages/com.s2024.data_ids/README.md
 
 ---
