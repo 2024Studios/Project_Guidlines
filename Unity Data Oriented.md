@@ -1,4 +1,4 @@
-# Practical Data-Oriented Design in Unity (Without Fighting MonoBehaviour)
+# Practical Data-Oriented Design in Unity (Use this one you need to update 100+ gameobject like a horde of enemy)
 
 ## The Problem With Naive MonoBehaviour Updates
 
