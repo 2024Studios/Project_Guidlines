@@ -67,7 +67,7 @@ We have five approved methods for systems to communicate. Understanding *what* t
 ### 🔄 2024 Service Cache
 
 - Higher level calling -> Lower level
-- for example if UI HUD needs to keep track of playerHealth , you can just get use serviceLocator to keep reference of playerHealth
+- for example if UI HUD needs to keep track of playerHealth , you can just use serviceLocator to keep reference of playerHealth
 - for more info check here 
 - https://github.com/2024Studios/CustomTools/blob/main/Packages/com.s2024.service_cache/README.md
 
