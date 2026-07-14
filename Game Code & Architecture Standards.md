@@ -31,9 +31,11 @@ Each layer contains multiple **Systems**, and **each System gets its own Assembl
 
 | Layer | Scope | Examples |
 | --- | --- | --- |
-| **1. High (Gameplay)** | Specific game rules, entity logic, and game loop. | `Character Controllers`, `AI`, `Weapons`, `Game Modes` |
-| **2. Mid (Features)** | Reusable gameplay mechanics and interfaces. | `Inventory`, `Quest Log`, `UI Logic`, `Objectives` |
-| **3. Low (Core Engine)**| Foundational engine wrappers and global utilities. | `Save System`, `Audio`, `Localization`, `Event Bus` |
+| **1. High (Presentation)** | UI Logic, Anything the player directly sees, hears, or interacts with via UI. This layer reacts to state changes but rarely dictates game rules. | `MainMenu`, `HUD`|
+| **2. Mid (Gameplay System)** | Logic specific to a particular level, scene, or game mode. | `EnemyMovement`, `Puzzle1Logic`, `CameraMovement`|
+| **3. Low (Core Game Systems)**| Foundational game systems | `Save System`, `EnemyAI`, `CharacterController`, `Inventory`|
+| **4. Lowest (Core Data)**| Structs , Enums , scriptable objects that are global for the entire project | `GameplayMode`, `MissionType`, `ScoreStruct`, `ScoreChangeEvent` |
+
 
 > [!NOTE]
 > **Hierarchy Scaling:** This is a foundational hierarchy. Additional layers can be added or adjusted if it suits the specific scale and needs of the game.
@@ -75,33 +77,43 @@ When scripts *within the exact same system* need to talk to each other, we gener
 ## ⚖️ 3. The Golden Rules of System Communication
 
 When writing a script that needs to interact with another system, ask yourself the following three questions to determine the exact tool you must use.
+=========================================================================
+            THE COMMUNICATION DECISION TREE
+=========================================================================
 
-### ❓ Q1: Do I need a return value *right now* to continue my logic?
-
-- **YES (Lower Layer):** Use the **Service Locator**. 
-  - *Example: If your gameplay code needs to read a save file to proceed.*
-  - *Or the system needs to be cached because it will be called regularly, for example, physics or character Motor* 
-- **YES (Same Layer):** Read from a shared **Blackboard** or pass an **Interface**. 
-  - *Rule: Do not use the Service Locator to couple two high-level gameplay systems together.*
-- **YES (Math/Data):** Use a **Static Function**. 
-  - *Example: If you need a damage multiplier, pass your data into a pure static math class.*
-  - *Think of it as **Mathf.Sqrt** a simple math function that does math calculation only on its input; it doesn't change or affect class members or anything else*
-- **NO:** Use **Events**. *(See Q3).*
-
-### ❓ Q2: Am I communicating with a specific physical entity in the world?
-
-- **YES (e.g., a Door, a Vehicle):** Use a **Direct Reference** or **Interface**.
-  - *How:* Typically obtained via a spatial query like a Raycast (calculating distance strictly in **meters**) or OverlapSphere. Physics is our spatial decoupler. You interact with the `IInteractable` interface returned by the raycast, keeping the caller completely blind to the specific object type.
-- Or Use **DataID** if you need an entity that exists in a table-like format, use their ID think Unity localization, where you get the localized text by ID and in code you need variable of type *LocalizedString*, which is a wrapper around the ID, same for Audio clips, abilities, or weapons so depending on the type and system use the proper way to reference this entity *Also in this case you can say we aren't referencing a system we just need Data Asset*
-
-### ❓ Q3: Am I communicating with a lower-level layer?
-
-- **NO RETURN VALUE NEEDED:** Use **Events**. 
-  - *Why:* This is for "Fire and Forget" actions. If the player jumps, fire a `PlaySoundEvent`.
-  - It provides the best decoupling when you don't care about the return value
-  - Events can also be used as a way to enhance performance by queuing similar messages. Think of it, instead of each element calling audio play, which may cause a cache miss, we queue all the audio plays in this frame, and the audio manager at the end of the frame loops over all the queued audio events to play the audio
-- **RETURN VALUE NEEDED:** Use the **Service Locator** to query the lower layer.
-
+ [ START: I need my script to communicate with something else ]
+    │
+    ├─► 1. Is it a specific physical entity in the 3D/2D world?
+    │      (e.g., A door, an enemy, a vehicle)
+    │      └─► USE: Physics (Raycast/Overlap) + Interface
+    │               (e.g., hit.collider.TryGetComponent<IInteractable>())
+    │
+    ├─► 2. Is it pure, stateless math or data transformation?
+    │      (e.g., Calculating critical hit damage)
+    │      └─► USE: Static Function
+    │               (e.g., CombatMath.CalculateCrit(ref stats))
+    │
+    ├─► 3. Are you fetching a global asset or config from a table?
+    │      (e.g., An audio clip, localized text, a weapon stat block)
+    │      └─► USE: Data ID / Scriptable Object
+    │               (e.g., AudioService.Play(DashAudioID))
+    │
+    ├─► 4. Do you need a return value RIGHT NOW to continue your code?
+    │      │
+    │      ├─► From a LOWER Layer? (Core Systems)
+    │      │   └─► USE: Service Locator
+    │      │            (e.g., Services.Get<ISaveSystem>().ReadSlot(1))
+    │      │
+    │      └─► From the SAME Layer? (Gameplay Systems)
+    │          └─► USE: Blackboard or direct Interface passing
+    │                   (e.g., LevelBlackboard.IsRaining)
+    │                   *Never use the Service Locator to link two Gameplay systems.*
+    │
+    └─► 5. You don't need a return value? (Fire & Forget)
+           (e.g., The player jumped, an enemy died, the score changed)
+           └─► USE: Event Bus
+                    (e.g., EventBus.Fire(new PlayerJumpedEvent()))
+                    *This provides maximum decoupling and allows frame-end queuing.*
 ---
 
 ## 🚀 4. The Communication Cheat Sheet
