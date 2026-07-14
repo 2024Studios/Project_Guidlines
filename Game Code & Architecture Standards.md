@@ -56,11 +56,10 @@ We have five approved methods for systems to communicate. Understanding *what* t
 
 | Tool | Concept | Best Used For |
 | --- | --- | --- |
-| **Direct Reference** | A hard link to another class via `GetComponent` or `[SerializeField]`. | Intra-system links & cached hierarchy lookups. |
-| **Interface** | Interacting with a contract (`IInteractable`) rather than a concrete class. | Polymorphism & spatial queries (Raycasts). |
-| **Service Locator** | A safe, interface-driven global registry (`Services.Get<T>()`). | Fetching core engine managers & retrieving data. |
-| **Event** | A decoupled struct broadcasted to the void (`EventBus.Fire()`). | Fire-and-forget actions across layer boundaries. |
-| **Static Methods** | Pure functions used strictly for math and data transformations. | Stateless calculations passing `ref` structs. |
+| **Direct Reference** | A hard link to another class via `GetComponent` or `[SerializeField]`. | you are with-in the same layer and with-in the same assembly definition |
+| **Service Locator** | A safe, interface-driven global registry (`Services.Get<T>()`). | Higher layer wants to communicate with lower layer, good when you want a reference to a class that you will call offen or expect return value from it |
+| **Event** | A decoupled struct broadcasted to the void (`EventBus.Fire()`). | Fire-and-forget actions across layer boundaries. the most suitable way if lower layers want to trigger something , many systems needs to listen to this change |
+| **Static Methods** | Pure functions used strictly for math and data transformations. | for example if you have damage calcualtions on lower level , think of it as calling Mathf library or vector3 library |
 | **Data IDs** | Unique IDs that can reference game entities | similar to localization, they are used to reference a single entity that exists in a big table or in otherwords you just want to reference an audio from a list of audios or an ability from the abilities list  |
 > [!TIP]
 > **Event Timing:** Events can be executed instantly or queued until the end of the frame, depending on the urgency of the action.
